@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Bot Verification</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .g-recaptcha {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Discord Bot Verification</h1>
+        <p>Please complete the reCAPTCHA below to verify yourself:</p>
+
+        <!-- Google reCAPTCHA widget -->
+        <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+
+        <br>
+
+        <!-- Button to submit the verification -->
+        <button id="verifyBtn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Verify</button>
+
+        <script>
+            document.getElementById('verifyBtn').addEventListener('click', async () => {
+                const token = grecaptcha.getResponse();
+                if (!token) {
+                    alert("Please complete the reCAPTCHA.");
+                    return;
+                }
+
+                // Send the token to the backend for verification
+                const response = await fetch('/verify-recaptcha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert("Verification successful! You are now verified.");
+                    // Redirect or take further actions (e.g., redirect to a Discord channel)
+                    window.location.href = "https://discord.com/channels/YOUR_GUILD_ID/YOUR_CHANNEL_ID";
+                } else {
+                    alert("Verification failed. Please try again.");
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
